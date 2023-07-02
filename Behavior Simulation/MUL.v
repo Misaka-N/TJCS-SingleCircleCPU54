@@ -1,28 +1,31 @@
 `timescale 1ns / 1ps
 module MUL(
-    input sign_flag,    //ÊÇ·ñÊÇÓĞ·ûºÅ³Ë·¨
-    input [31:0] A,     //ÊäÈëµÄ³ËÊıA
-    input [31:0] B,     //ÊäÈëµÄ³ËÊıB
-    output [31:0] HI,   //¸ß32Î»½á¹û
-    output [31:0] LO    //µÍ32Î»½á¹û
+    input sign_flag,    //æ˜¯å¦æ˜¯æœ‰ç¬¦å·ä¹˜æ³•
+    input [31:0] A,     //è¾“å…¥çš„ä¹˜æ•°A
+    input [31:0] B,     //è¾“å…¥çš„ä¹˜æ•°B
+    output [31:0] HI,   //é«˜32ä½ç»“æœ
+    output [31:0] LO    //ä½32ä½ç»“æœ
     );
 
-/* ÄÚ²¿ÓÃ±äÁ¿ */
-wire [63:0] unsigned_result;        //±£´æÎŞ·ûºÅ³Ë·¨½á¹û
-wire signed [63:0] signed_result;   //±£´æÓĞ·ûºÅ³Ë·¨½á¹û
-wire [63:0] unsigned_A;             //À©Õ¹µÄÎŞ·ûºÅA
-wire [63:0] unsigned_B;             //À©Õ¹µÄÎŞ·ûºÅB
-wire signed [63:0] signed_A;        //À©Õ¹µÄÓĞ·ûºÅA
-wire signed [63:0] signed_B;        //À©Õ¹µÄÓĞ·ûºÅB
+/* å†…éƒ¨ç”¨å˜é‡ */
+wire [63:0] result;                 //ç»“æœç»Ÿä¸€å­˜å‚¨åœ¨resultä¸­
+wire [63:0] unsigned_result;        //ä¿å­˜æ— ç¬¦å·ä¹˜æ³•ç»“æœ
+wire signed [63:0] signed_result;   //ä¿å­˜æœ‰ç¬¦å·ä¹˜æ³•ç»“æœ
+wire [63:0] unsigned_A;             //æ‰©å±•çš„æ— ç¬¦å·A
+wire [63:0] unsigned_B;             //æ‰©å±•çš„æ— ç¬¦å·B
+wire signed [63:0] signed_A;        //æ‰©å±•çš„æœ‰ç¬¦å·A
+wire signed [63:0] signed_B;        //æ‰©å±•çš„æœ‰ç¬¦å·B
 
 assign unsigned_A = { 32'd0, A };
 assign unsigned_B = { 32'd0, B };
+assign unsigned_result = unsigned_A * unsigned_B;
+
 assign signed_A = { {32{A[31]}} , A };
 assign signed_B = { {32{B[31]}} , B };
-
-assign unsigned_result = unsigned_A * unsigned_B;
 assign signed_result = signed_A * signed_B;
 
-assign HI = sign_flag ? signed_result[63:32] : unsigned_result[63:32];
-assign LO = sign_flag ? signed_result[31:0] : unsigned_result[31:0];
+assign result = sign_flag ? signed_result : unsigned_result;
+
+assign HI = result[63:32];
+assign LO = result[31:0];
 endmodule
