@@ -1,15 +1,15 @@
 `timescale 1ns / 1ps
-module Decoder(                 //ËùÓĞ½Ó¿ÚÈç¹ûµ±Ç°ÒëÂë³öµÄÖ¸Áî²»ĞèÒª£¬ÖÃÎª¸ß×è¿¹
-    input  [31:0] instr_in,     //ĞèÒªÒëÂëµÄÖ¸Áî£¬Ò²¾ÍÊÇµ±Ç°ÒªÖ´ĞĞµÄÖ¸Áî
-    output [53:0] op_flags,     //54ÌõÖ¸Áî¶ÔÓ¦µÄ±êÖ¾Î»
-    output [4:0]  RsC,          //Rs¶ÔÓ¦µÄ¼Ä´æÆ÷µÄµØÖ·
-    output [4:0]  RtC,          //Rt¶ÔÓ¦µÄ¼Ä´æÆ÷µÄµØÖ·
-    output [4:0]  RdC,          //Rd¶ÔÓ¦µÄ¼Ä´æÆ÷µÄµØÖ·
-    output [4:0]  shamt,        //Î»ÒÆÆ«ÒÆÁ¿
-    output [15:0] immediate,    //Á¢¼´Êı
-    output [25:0] address       //Ìø×ªµØÖ·£¨JĞÍÖ¸ÁîÓÃ£©
+module Decoder(                 //æ‰€æœ‰æ¥å£å¦‚æœå½“å‰è¯‘ç å‡ºçš„æŒ‡ä»¤ä¸éœ€è¦ï¼Œç½®ä¸ºé«˜é˜»æŠ—
+    input  [31:0] instr_in,     //éœ€è¦è¯‘ç çš„æŒ‡ä»¤ï¼Œä¹Ÿå°±æ˜¯å½“å‰è¦æ‰§è¡Œçš„æŒ‡ä»¤
+    output [53:0] op_flags,     //54æ¡æŒ‡ä»¤å¯¹åº”çš„æ ‡å¿—ä½
+    output [4:0]  RsC,          //Rså¯¹åº”çš„å¯„å­˜å™¨çš„åœ°å€
+    output [4:0]  RtC,          //Rtå¯¹åº”çš„å¯„å­˜å™¨çš„åœ°å€
+    output [4:0]  RdC,          //Rdå¯¹åº”çš„å¯„å­˜å™¨çš„åœ°å€
+    output [4:0]  shamt,        //ä½ç§»åç§»é‡
+    output [15:0] immediate,    //ç«‹å³æ•°
+    output [25:0] address       //è·³è½¬åœ°å€ï¼ˆJå‹æŒ‡ä»¤ç”¨ï¼‰
     );
-/* ¶¨Òå¸÷Ö¸ÁîÔÚÔ­Ö¸ÁîÖĞ¶ÔÓ¦µÄ±àÂë */
+/* å®šä¹‰å„æŒ‡ä»¤åœ¨åŸæŒ‡ä»¤ä¸­å¯¹åº”çš„ç¼–ç  */
 parameter ADD_OPE   = 6'b100000;
 parameter ADDU_OPE  = 6'b100001;
 parameter SUB_OPE   = 6'b100010;
@@ -42,7 +42,7 @@ parameter LUI_OPE   = 6'b001111;
 parameter J_OPE     = 6'b000010;
 parameter JAL_OPE   = 6'b000011;
 
-/* 54ÌõÖ¸ÁîÌí¼Ó²¿·Ö */
+/* 54æ¡æŒ‡ä»¤æ·»åŠ éƒ¨åˆ† */
 parameter CLZ_OPE     = 6'b100000;
 parameter JALR_OPE    = 6'b001001;
 parameter MTHI_OPE    = 6'b010001;
@@ -60,14 +60,14 @@ parameter BREAK_OPE   = 6'b001101;
 parameter SYSCALL_OPE = 6'b001100;
 parameter TEQ_OPE     = 6'b110100;
 parameter MFC0_OPE    = 5'b00000;
-parameter MTC0_OPE    = 5'b00100; //×¢ÒâÕâÁ½¸öÖ¸ÁîÊÇ¿¿ÁíÍâÎåÎ»orderÇø·ÖµÄ£¬opºÍfunc¶¼Ò»Ñù
+parameter MTC0_OPE    = 5'b00100; //æ³¨æ„è¿™ä¸¤ä¸ªæŒ‡ä»¤æ˜¯é å¦å¤–äº”ä½orderåŒºåˆ†çš„ï¼Œopå’Œfuncéƒ½ä¸€æ ·
 parameter MUL_OPE     = 6'b000010;
 parameter MULTU_OPE   = 6'b011001;
 parameter DIV_OPE     = 6'b011010;
 parameter DIVU_OPE    = 6'b011011;
 parameter BGEZ_OPE    = 6'b000001;
 
-/* 54ÌõÖ¸Áî¶ÔÓ¦µÄ±êÖ¾Î» */
+/* 54æ¡æŒ‡ä»¤å¯¹åº”çš„æ ‡å¿—ä½ */
 parameter ADD   = 6'd0;
 parameter ADDU  = 6'd1;
 parameter SUB   = 6'd2;
@@ -124,8 +124,8 @@ parameter DIV     = 6'd51;
 parameter DIVU    = 6'd52;
 parameter BGEZ    = 6'd53;
 
-/* ÏÂÃæÊÇ¸³Öµ */
-/* ¶ÔÖ¸Áî½øĞĞÒëÂë£¬ÅĞ¶ÏÊÇÄÄ¸öÖ¸Áî */
+/* ä¸‹é¢æ˜¯èµ‹å€¼ */
+/* å¯¹æŒ‡ä»¤è¿›è¡Œè¯‘ç ï¼Œåˆ¤æ–­æ˜¯å“ªä¸ªæŒ‡ä»¤ */
 assign op_flags[ADD]   = ((instr_in[31:26] == 6'h0) && (instr_in[5:0] == ADD_OPE )) ? 1'b1 : 1'b0;
 assign op_flags[ADDU]  = ((instr_in[31:26] == 6'h0) && (instr_in[5:0] == ADDU_OPE)) ? 1'b1 : 1'b0;
 assign op_flags[SUB]   = ((instr_in[31:26] == 6'h0) && (instr_in[5:0] == SUB_OPE )) ? 1'b1 : 1'b0;
@@ -174,8 +174,8 @@ assign op_flags[ERET]    = ((instr_in[31:26] == 6'b010000) && (instr_in[5:0] == 
 assign op_flags[BREAK]   = ((instr_in[31:26] == 6'h0) && (instr_in[5:0] == BREAK_OPE   )) ? 1'b1 : 1'b0;
 assign op_flags[SYSCALL] = ((instr_in[31:26] == 6'h0) && (instr_in[5:0] == SYSCALL_OPE )) ? 1'b1 : 1'b0;
 assign op_flags[TEQ]     = ((instr_in[31:26] == 6'h0) && (instr_in[5:0] == TEQ_OPE     )) ? 1'b1 : 1'b0;
-assign op_flags[MFC0]    = ((instr_in[31:26] == 6'b010000) && (instr_in[5:0] == 6'h0) && (instr_in[25:21] == MFC0)) ? 1'b1 : 1'b0;
-assign op_flags[MTC0]    = ((instr_in[31:26] == 6'b010000) && (instr_in[5:0] == 6'h0) && (instr_in[25:21] == MTC0)) ? 1'b1 : 1'b0;
+assign op_flags[MFC0]    = ((instr_in[31:26] == 6'b010000) && (instr_in[5:0] == 6'h0) && (instr_in[25:21] == MFC0_OPE)) ? 1'b1 : 1'b0;
+assign op_flags[MTC0]    = ((instr_in[31:26] == 6'b010000) && (instr_in[5:0] == 6'h0) && (instr_in[25:21] == MTC0_OPE)) ? 1'b1 : 1'b0;
 assign op_flags[MUL]     = ((instr_in[31:26] == 6'b011100) && (instr_in[5:0] == MUL_OPE     )) ? 1'b1 : 1'b0;
 assign op_flags[MULTU]   = ((instr_in[31:26] == 6'h0) && (instr_in[5:0] == MULTU_OPE   )) ? 1'b1 : 1'b0;
 assign op_flags[DIV]     = ((instr_in[31:26] == 6'h0) && (instr_in[5:0] == DIV_OPE     )) ? 1'b1 : 1'b0;
@@ -183,7 +183,7 @@ assign op_flags[DIVU]    = ((instr_in[31:26] == 6'h0) && (instr_in[5:0] == DIVU_
 assign op_flags[BGEZ]    = ((instr_in[31:26] == BGEZ_OPE) && (instr_in[20:16] == 5'b00001) ) ? 1'b1 : 1'b0;
 
 
-/* È¡³öÖ¸ÁîÖĞ¸÷²¿·ÖµÄÖµ */
+/* å–å‡ºæŒ‡ä»¤ä¸­å„éƒ¨åˆ†çš„å€¼ */
 assign RsC = (op_flags[ADD]  || op_flags[ADDU] || op_flags[SUB]  || op_flags[SUBU]  ||
               op_flags[AND]  || op_flags[OR]   || op_flags[XOR]  || op_flags[NOR]   ||
               op_flags[SLT]  || op_flags[SLTU] || op_flags[SLLV] || op_flags[SRLV]  ||
