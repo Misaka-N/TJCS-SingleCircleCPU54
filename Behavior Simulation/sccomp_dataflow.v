@@ -1,90 +1,90 @@
 `timescale 1ns / 1ps
 module sccomp_dataflow(
-    input clk_in,       //Ê±ÖÓĞÅºÅ
-    input reset,        //¸´Î»ĞÅºÅ
-    output [31:0] inst, //Êä³öÖ¸Áî
-    output [31:0] pc    //Ö´ĞĞµØÖ·
+    input clk_in,       //æ—¶é’Ÿä¿¡å·
+    input reset,        //å¤ä½ä¿¡å·
+    output [31:0] inst, //è¾“å‡ºæŒ‡ä»¤
+    output [31:0] pc    //æ‰§è¡Œåœ°å€
     );
 
-/* CPUÓÃ */
-wire [31:0] pc_out;          //Êä³öÖ¸ÁîµØÖ·£¬¸æËßIMEMÒªÈ¡ÄÄÌõ
-wire [31:0] dm_addr_temp;    //DMEMÁÙÊ±µØÖ·£¬ĞèÒª×ª»¯
+/* CPUç”¨ */
+wire [31:0] pc_out;          //è¾“å‡ºæŒ‡ä»¤åœ°å€ï¼Œå‘Šè¯‰IMEMè¦å–å“ªæ¡
+wire [31:0] dm_addr_temp;    //DMEMä¸´æ—¶åœ°å€ï¼Œéœ€è¦è½¬åŒ–
 
 
-/* IMEMÓÃ */
-wire [31:0] im_addr_in;     //11Î»Ö¸ÁîÂëµØÖ·£¬´ÓIMEMÖĞ¶ÁÖ¸Áî
-wire [31:0] im_instr_out;   //32Î»Ö¸ÁîÂë
+/* IMEMç”¨ */
+wire [31:0] im_addr_in;     //11ä½æŒ‡ä»¤ç åœ°å€ï¼Œä»IMEMä¸­è¯»æŒ‡ä»¤
+wire [31:0] im_instr_out;   //32ä½æŒ‡ä»¤ç 
 
 assign im_addr_in = pc_out - 32'h00400000;
 
-/* DMEMÓÃ */
-wire dm_ena;                //ÊÇ·ñĞèÒªÆôÓÃDMEM
-wire dm_r, dm_w;            //¶ÁĞ´Ö¸Áî
-wire [31:0] dm_addr;        //ĞèÒªÓÃµ½µÄDMEMµØÖ·
-wire [31:0] dm_data_out;    //DMEM¶ÁÈ¡Ê±¶ÁÈ¡µ½µÄÊı¾İ
-wire [31:0] dm_data_w;      //ÒªĞ´ÈëDMEMµÄÄÚÈİ 
-wire sb_flag;               //µ±Ç°Ğ´ÈëÖ¸ÁîÊÇ·ñÊÇSB·¢³ö
-wire sh_flag;               //µ±Ç°Ğ´ÈëÖ¸ÁîÊÇ·ñÊÇSH·¢³ö
-wire sw_flag;               //µ±Ç°Ğ´ÈëÖ¸ÁîÊÇ·ñÊÇSW·¢³ö
-wire lb_flag;               //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLB·¢³ö
-wire lh_flag;               //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLH·¢³ö
-wire lbu_flag;              //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLBU·¢³ö
-wire lhu_flag;              //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLHU·¢³ö
-wire lw_flag;               //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLW·¢³ö
+/* DMEMç”¨ */
+wire dm_ena;                //æ˜¯å¦éœ€è¦å¯ç”¨DMEM
+wire dm_r, dm_w;            //è¯»å†™æŒ‡ä»¤
+wire [31:0] dm_addr;        //éœ€è¦ç”¨åˆ°çš„DMEMåœ°å€
+wire [31:0] dm_data_out;    //DMEMè¯»å–æ—¶è¯»å–åˆ°çš„æ•°æ®
+wire [31:0] dm_data_w;      //è¦å†™å…¥DMEMçš„å†…å®¹ 
+wire sb_flag;               //å½“å‰å†™å…¥æŒ‡ä»¤æ˜¯å¦æ˜¯SBå‘å‡º
+wire sh_flag;               //å½“å‰å†™å…¥æŒ‡ä»¤æ˜¯å¦æ˜¯SHå‘å‡º
+wire sw_flag;               //å½“å‰å†™å…¥æŒ‡ä»¤æ˜¯å¦æ˜¯SWå‘å‡º
+wire lb_flag;               //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LBå‘å‡º
+wire lh_flag;               //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LHå‘å‡º
+wire lbu_flag;              //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LBUå‘å‡º
+wire lhu_flag;              //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LHUå‘å‡º
+wire lw_flag;               //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LWå‘å‡º
 
-assign dm_addr = (dm_addr_temp -  32'h10010000)/4;
+assign dm_addr = dm_addr_temp -  32'h10010000;
 
-/* Êä³öÓÃ */
+/* è¾“å‡ºç”¨ */
 assign pc = pc_out;
 assign inst = im_instr_out;
 
 
-/* IMEMÖ¸Áî´æ´¢Æ÷µ÷ÓÃ */
+/* IMEMæŒ‡ä»¤å­˜å‚¨å™¨è°ƒç”¨ */
 IMEM imem(
-    .im_addr_in(im_addr_in[12:2]),  //11Î»Ö¸ÁîÂëµØÖ·£¬´ÓIMEMÖĞ¶ÁÖ¸Áî
-    .im_instr_out(im_instr_out)     //32Î»Ö¸ÁîÂë
+    .im_addr_in(im_addr_in[12:2]),  //11ä½æŒ‡ä»¤ç åœ°å€ï¼Œä»IMEMä¸­è¯»æŒ‡ä»¤
+    .im_instr_out(im_instr_out)     //32ä½æŒ‡ä»¤ç 
     );
 
-/* DMEMÊı¾İ´æ´¢Æ÷µ÷ÓÃ */
-DMEM dmem(                          //DMEM¸ù¾İĞÔÄÜ¿¼Á¿£¬Éè¼Æ³ÉÒì²½¶ÁÈ¡Êı¾İ£¬Í¬²½Ğ´ÈëÊı¾İµÄĞÎÊ½
-    .dm_clk(clk_in),                //DMEMÊ±ÖÓĞÅºÅ£¬Ö»ÔÚĞ´Êı¾İÊ±Ê¹ÓÃ
-    .dm_ena(dm_ena),                //Ê¹ÄÜĞÅºÅ¶Ë£¬¸ßµçÆ½ÓĞĞ§£¬ÓĞĞ§Ê±²ÅÄÜ¶ÁÈ¡/Ğ´ÈëÊı¾İ
-    .dm_r(dm_r),                    //read¶ÁĞÅºÅ£¬¶ÁÈ¡Ê±À­¸ß
-    .dm_w(dm_w),                    //writeĞ´ĞÅºÅ£¬Ğ´ÈëÊ±À­¸ß
-    .sb_flag(sb_flag),              //µ±Ç°Ğ´ÈëÖ¸ÁîÊÇ·ñÊÇSB·¢³ö
-    .sh_flag(sh_flag),              //µ±Ç°Ğ´ÈëÖ¸ÁîÊÇ·ñÊÇSH·¢³ö
-    .sw_flag(sw_flag),              //µ±Ç°Ğ´ÈëÖ¸ÁîÊÇ·ñÊÇSW·¢³ö
-    .lb_flag(lb_flag),              //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLB·¢³ö
-    .lh_flag(lh_flag),              //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLH·¢³ö
-    .lbu_flag(lbu_flag),            //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLBU·¢³ö
-    .lhu_flag(lhu_flag),            //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLHU·¢³ö
-    .lw_flag(lw_flag),              //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLW·¢³ö
-    .dm_addr(dm_addr[6:0]),         //7Î»µØÖ·£¬Òª¶ÁÈ¡/Ğ´ÈëµÄµØÖ·
-    .dm_data_in(dm_data_w),         //Ğ´ÈëÊ±ÒªĞ´ÈëµÄÊı¾İ
-    .dm_data_out(dm_data_out)       //¶ÁÈ¡Ê±¶ÁÈ¡µ½µÄÊı¾İ
+/* DMEMæ•°æ®å­˜å‚¨å™¨è°ƒç”¨ */
+DMEM dmem(                          //DMEMæ ¹æ®æ€§èƒ½è€ƒé‡ï¼Œè®¾è®¡æˆå¼‚æ­¥è¯»å–æ•°æ®ï¼ŒåŒæ­¥å†™å…¥æ•°æ®çš„å½¢å¼
+    .dm_clk(clk_in),                //DMEMæ—¶é’Ÿä¿¡å·ï¼Œåªåœ¨å†™æ•°æ®æ—¶ä½¿ç”¨
+    .dm_ena(dm_ena),                //ä½¿èƒ½ä¿¡å·ç«¯ï¼Œé«˜ç”µå¹³æœ‰æ•ˆï¼Œæœ‰æ•ˆæ—¶æ‰èƒ½è¯»å–/å†™å…¥æ•°æ®
+    .dm_r(dm_r),                    //readè¯»ä¿¡å·ï¼Œè¯»å–æ—¶æ‹‰é«˜
+    .dm_w(dm_w),                    //writeå†™ä¿¡å·ï¼Œå†™å…¥æ—¶æ‹‰é«˜
+    .sb_flag(sb_flag),              //å½“å‰å†™å…¥æŒ‡ä»¤æ˜¯å¦æ˜¯SBå‘å‡º
+    .sh_flag(sh_flag),              //å½“å‰å†™å…¥æŒ‡ä»¤æ˜¯å¦æ˜¯SHå‘å‡º
+    .sw_flag(sw_flag),              //å½“å‰å†™å…¥æŒ‡ä»¤æ˜¯å¦æ˜¯SWå‘å‡º
+    .lb_flag(lb_flag),              //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LBå‘å‡º
+    .lh_flag(lh_flag),              //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LHå‘å‡º
+    .lbu_flag(lbu_flag),            //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LBUå‘å‡º
+    .lhu_flag(lhu_flag),            //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LHUå‘å‡º
+    .lw_flag(lw_flag),              //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LWå‘å‡º
+    .dm_addr(dm_addr[6:0]),         //7ä½åœ°å€ï¼Œè¦è¯»å–/å†™å…¥çš„åœ°å€
+    .dm_data_in(dm_data_w),         //å†™å…¥æ—¶è¦å†™å…¥çš„æ•°æ®
+    .dm_data_out(dm_data_out)       //è¯»å–æ—¶è¯»å–åˆ°çš„æ•°æ®
     );
 
-/* CPUµ÷ÓÃ */
+/* CPUè°ƒç”¨ */
 cpu sccpu(
-    .clk(clk_in),                   //CPUÖ´ĞĞÊ±ÖÓ
-    .ena(1'b1),                     //Ê¹ÄÜĞÅºÅ¶Ë
-    .rst(reset),                    //¸´Î»ĞÅºÅ
-    .instr_in(im_instr_out),        //µ±Ç°ÒªÖ´ĞĞµÄÖ¸Áî
-    .dm_data(dm_data_out),          //¶ÁÈ¡µ½µÄDMEMµÄ¾ßÌåÄÚÈİ
-    .dm_ena(dm_ena),                //ÊÇ·ñĞèÒªÆôÓÃDMEM
-    .dm_w(dm_w),                    //Èç¹ûÆôÓÃDMEM£¬ÊÇ·ñÎªĞ´Èë
-    .dm_r(dm_r),                    //Èç¹ûÆôÓÃDMEM£¬ÊÇ·ñÎª¶ÁÈ¡
-    .pc_out(pc_out),                //Êä³öÖ¸ÁîµØÖ·£¬¸æËßIMEMÒªÈ¡ÄÄÌõ
-    .dm_addr(dm_addr_temp),         //ĞèÒªÓÃµ½µÄDMEMµØÖ·
-    .dm_data_w(dm_data_w),          //ÒªĞ´ÈëDMEMµÄÄÚÈİ 
-    .sb_flag(sb_flag),              //µ±Ç°Ğ´ÈëÖ¸ÁîÊÇ·ñÊÇSB·¢³ö
-    .sh_flag(sh_flag),              //µ±Ç°Ğ´ÈëÖ¸ÁîÊÇ·ñÊÇSH·¢³ö
-    .sw_flag(sw_flag),              //µ±Ç°Ğ´ÈëÖ¸ÁîÊÇ·ñÊÇSW·¢³ö
-    .lb_flag(lb_flag),              //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLB·¢³ö
-    .lh_flag(lh_flag),              //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLH·¢³ö
-    .lbu_flag(lbu_flag),            //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLBU·¢³ö
-    .lhu_flag(lhu_flag),            //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLHU·¢³ö
-    .lw_flag(lw_flag)               //µ±Ç°¶ÁÈ¡Ö¸ÁîÊÇ·ñÊÇLW·¢³ö
+    .clk(clk_in),                   //CPUæ‰§è¡Œæ—¶é’Ÿ
+    .ena(1'b1),                     //ä½¿èƒ½ä¿¡å·ç«¯
+    .rst(reset),                    //å¤ä½ä¿¡å·
+    .instr_in(im_instr_out),        //å½“å‰è¦æ‰§è¡Œçš„æŒ‡ä»¤
+    .dm_data(dm_data_out),          //è¯»å–åˆ°çš„DMEMçš„å…·ä½“å†…å®¹
+    .dm_ena(dm_ena),                //æ˜¯å¦éœ€è¦å¯ç”¨DMEM
+    .dm_w(dm_w),                    //å¦‚æœå¯ç”¨DMEMï¼Œæ˜¯å¦ä¸ºå†™å…¥
+    .dm_r(dm_r),                    //å¦‚æœå¯ç”¨DMEMï¼Œæ˜¯å¦ä¸ºè¯»å–
+    .pc_out(pc_out),                //è¾“å‡ºæŒ‡ä»¤åœ°å€ï¼Œå‘Šè¯‰IMEMè¦å–å“ªæ¡
+    .dm_addr(dm_addr_temp),         //éœ€è¦ç”¨åˆ°çš„DMEMåœ°å€
+    .dm_data_w(dm_data_w),          //è¦å†™å…¥DMEMçš„å†…å®¹ 
+    .sb_flag(sb_flag),              //å½“å‰å†™å…¥æŒ‡ä»¤æ˜¯å¦æ˜¯SBå‘å‡º
+    .sh_flag(sh_flag),              //å½“å‰å†™å…¥æŒ‡ä»¤æ˜¯å¦æ˜¯SHå‘å‡º
+    .sw_flag(sw_flag),              //å½“å‰å†™å…¥æŒ‡ä»¤æ˜¯å¦æ˜¯SWå‘å‡º
+    .lb_flag(lb_flag),              //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LBå‘å‡º
+    .lh_flag(lh_flag),              //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LHå‘å‡º
+    .lbu_flag(lbu_flag),            //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LBUå‘å‡º
+    .lhu_flag(lhu_flag),            //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LHUå‘å‡º
+    .lw_flag(lw_flag)               //å½“å‰è¯»å–æŒ‡ä»¤æ˜¯å¦æ˜¯LWå‘å‡º
     );
 
 endmodule
